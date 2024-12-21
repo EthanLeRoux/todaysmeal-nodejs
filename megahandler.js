@@ -36,13 +36,66 @@ const writeFile = async function (imageBuffer, imageName) {
 
         const fileUrl = await file.link();
 
-        console.log("The file that was uploaded's link is :" + fileUrl);
+        // console.log("The file that was uploaded's link is :" + fileUrl);
 
+        return fileUrl;
     } catch (error) {
         console.error('Error uploading file:', error);
         throw error;
     }
 };
+
+const writeFileToDir = async function (imageBuffer, imageName, dirName) {
+    try {
+        console.log(dirName);
+        // Check if imageName is valid
+        if (!imageName || imageName.trim() === '') {
+            throw new Error('File name is required');
+        }
+
+        // Initialize Mega storage
+        const storage = await new Storage({
+            email: `${process.env.MEGA_USERNAME}`,
+            password: `${process.env.MEGA_PASSWORD}`,
+        }).ready;
+
+        console.log('Looking for folder...');
+
+        const megafolder = storage.root.children.find(function (child) {
+            return child.name === 'testmega';
+        });
+
+
+        if (!megafolder) {
+            throw new Error('testmega folder not found in the root');
+        }
+
+        console.log('megafolder children:', megafolder.children.map(child => child.name));
+
+        const folder = megafolder.children.find(function(child){
+            return child.name === dirName;
+        });
+
+        if (!folder) {
+            throw new Error('Folder is not found');
+        }
+
+        // Upload image to the folder on Mega
+        const file = await folder.upload( imageName, imageBuffer).complete;
+
+        console.log('The file was uploaded!', file);
+
+        const fileUrl = await file.link();
+
+        // console.log("The file that was uploaded's link is :" + fileUrl);
+
+        return fileUrl;
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        throw error;
+    }
+};
+
 
 const  readFile = async function () {
     try{
@@ -84,4 +137,4 @@ const newFolder = async function (username){
 
 
 
-module.exports = {writeFile, readFile, newFolder}
+module.exports = {writeFile, readFile, newFolder,writeFileToDir}

@@ -7,6 +7,8 @@ const signupRoutes = require('./routes/signuproutes');
 const loginRoutes = require('./routes/loginroutes');
 const homeRoutes = require('./routes/homeroutes');
 const fileRoutes = require('./routes/fileroutes');
+const postRoutes = require('./routes/postroutes');
+const likeRoutes = require('./routes/likeroutes');
 
 //load env vars
 dotenv.config();
@@ -33,4 +35,6 @@ app.use('/api/users/edit',userRoutes);
 app.use('/api/users/signup',signupRoutes);
 app.use('/api/users/login',loginRoutes);
 app.use('/api/files',fileRoutes);
+app.use('/api/posts',postRoutes);
+app.use('/api/likes',likeRoutes);
 app.use('/',homeRoutes);
